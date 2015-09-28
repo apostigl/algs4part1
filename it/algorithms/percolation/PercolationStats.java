@@ -1,3 +1,16 @@
+/*----------------------------------------------------------------
+ *  Author:        Angelo Postiglione
+ *  Written:       28/09/2015
+ *  Last updated:  28/09/2015
+ *
+ *  A program to perform a series of computational experiments
+ *  using Percolation
+ *  
+ *  http://coursera.cs.princeton.edu/algs4/assignments/percolation.html
+ *  
+ *----------------------------------------------------------------*/
+
+
 package it.algorithms.percolation;
 
 import edu.princeton.cs.algs4.StdRandom;
