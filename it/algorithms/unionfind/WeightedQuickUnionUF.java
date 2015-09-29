@@ -1,10 +1,10 @@
-package it.algorithms.unionfind;
-
 /**
  * Weighted Quick Union implementation of the Union Find problem.
  * 
- * @author Angelo
+ * @author Angelo Postiglione
  */
+
+package it.algorithms.unionfind;
 
 public class WeightedQuickUnionUF implements UnionFindInterface {
 	
