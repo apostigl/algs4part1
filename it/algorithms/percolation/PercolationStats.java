@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------
  *  Author:        Angelo Postiglione
  *  Written:       28/09/2015
- *  Last updated:  28/09/2015
+ *  Last updated:  29/09/2015
  *
  *  A program to perform a series of computational experiments
  *  using Percolation
@@ -19,7 +19,6 @@ import edu.princeton.cs.algs4.StdStats;
 public class PercolationStats {
     private static int n;
     private static int t;
-    private Percolation percolation;
 
     private double siteOpened;
     private double percolationThreshold = 0.0;
@@ -42,9 +41,10 @@ public class PercolationStats {
 
         //A series of T computational experiments
         for (int i = 0; i < T; i++) {
-            //Initialize a new experiment by creating a new data structure and reset the opened sites.
-            percolation = new Percolation(N);
             siteOpened = 0;
+
+            //Initialize a new experiment by creating a new data structure and reset the opened sites.
+            Percolation percolation = new Percolation(N);
 
             //Until the system percolates
             while (!percolation.percolates()) {
@@ -96,7 +96,7 @@ public class PercolationStats {
      * @return
      */
     public double confidenceLo() {
-        return mean() - (1.96 * Math.sqrt(stddev()) / Math.sqrt(t));
+        return mean() - ((1.96 * Math.sqrt(stddev())) / Math.sqrt(t));
     }
     
     /**
@@ -104,7 +104,7 @@ public class PercolationStats {
      * @return
      */
     public double confidenceHi() {
-        return mean() + (1.96 * Math.sqrt(stddev()) / Math.sqrt(t));
+        return mean() + ((1.96 * Math.sqrt(stddev())) / Math.sqrt(t));
     }
 
     /**
@@ -117,6 +117,7 @@ public class PercolationStats {
         t = Integer.parseInt(args[1]);
 
         PercolationStats pStats = new PercolationStats(n, t);
+        System.out.println("n = " + n + " t = "+ t);
         System.out.println("mean = " + pStats.mean());
         System.out.println("stdev = " + pStats.stddev());
         System.out.println("95% confidence interval = " + pStats.confidenceLo() + ", " + pStats.confidenceHi());
