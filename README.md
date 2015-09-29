@@ -1,5 +1,5 @@
-## "Algorithms Part I" Coursera class 
-### http://class.coursera.org/algs4partI-009
+## Algorithms Part I Coursera class 
+### Notes for the Coursera course [Algorithms I (Fall 2015)](https://www.coursera.org/course/algs4partI)
 -------------------------------------
 
 #### Programming Assignment 1: Percolation
