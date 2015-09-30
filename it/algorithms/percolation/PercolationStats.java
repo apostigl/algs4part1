@@ -10,7 +10,6 @@
  *  
  *----------------------------------------------------------------*/
 
-
 package it.algorithms.percolation;
 
 import edu.princeton.cs.algs4.StdRandom;
@@ -20,10 +19,7 @@ public class PercolationStats {
     private static int n;
     private static int t;
 
-    private double siteOpened;
-    private double percolationThreshold = 0.0;
-    private double[] percolationThresholdsList;
-    private int gridSize;
+    private double[] percolationThresholds;
 
     /**
      * Performs T independent experiments on an N-by-N grid
@@ -31,80 +27,74 @@ public class PercolationStats {
      * @param T The number of experiments
      */
     public PercolationStats(int N, int T) {
-        //The constructor should throw a java.lang.IllegalArgumentException if either N <= 0 or T <= 0.
+        // The constructor should throw a java.lang.IllegalArgumentException if either N <= 0 or T <= 0.
         if (N <= 0 || T <= 0) {
             throw new IllegalArgumentException("Arguments N and T shall be greater than zero.");
         }
 
-        percolationThresholdsList = new double[T];
-        gridSize = N*N;
+        percolationThresholds = new double[T];
+        double gridSize = N * N;
 
-        //A series of T computational experiments
+        // A series of T computational experiments
         for (int i = 0; i < T; i++) {
-            siteOpened = 0;
+            int siteOpened = 0;
 
-            //Initialize a new experiment by creating a new data structure and reset the opened sites.
+            // Initialize a new experiment by creating a new data structure and reset the opened sites.
             Percolation percolation = new Percolation(N);
 
-            //Until the system percolates
             while (!percolation.percolates()) {
-                //Choose a site (row x, column y) uniformly at random among all blocked sites.
+                // Choose a site (row x, column y) uniformly at random among all blocked sites.
                 int x = StdRandom.uniform(1, N+1);
                 int y = StdRandom.uniform(1, N+1);
 
                 if (!percolation.isOpen(x, y)) {
-                    //Open the site (row x, column y)
                     percolation.open(x, y);
                     siteOpened++;
 
-                    if (percolation.percolates()) {
-                        //The fraction of sites that are opened when 
-                        //the system percolates provides an estimate of the percolation threshold
-                        percolationThreshold = siteOpened / gridSize;
-
-                        //Add the current threshold to the list of T thresholds
-                        percolationThresholdsList[i] = percolationThreshold;  
-                    }
                 }
             }
+            
+            // The fraction of sites that are opened when the system 
+            // percolates provides an estimate of the percolation threshold
+            percolationThresholds[i] = (double) siteOpened / gridSize;
         }
     }
 
     /**
      * Sample mean of percolation threshold
-     * @return
+     * @return The calculated mean
      */
     public double mean() {
-        return StdStats.mean(percolationThresholdsList);
+        return StdStats.mean(percolationThresholds);
     }
 
     /**
      * Sample standard deviation of percolation threshold
-     * @return
+     * @return The calculated standard deviation
      */
     public double stddev() {
-        //If T equals 1 the sample standard deviation is undefined. We recommend returning Double.NaN.
+        // If T equals 1 the sample standard deviation is undefined.
         if (t == 1) {
             return Double.NaN;
         }
         
-        return StdStats.stddev(percolationThresholdsList);
+        return StdStats.stddev(percolationThresholds);
     }
 
     /**
      * Low endpoint of 95% confidence interval
-     * @return
+     * @return The low confidence interval
      */
     public double confidenceLo() {
-        return mean() - ((1.96 * Math.sqrt(stddev())) / Math.sqrt(t));
+        return mean() - (1.96 * stddev() / Math.sqrt(t));
     }
     
     /**
      * High endpoint of 95% confidence interval
-     * @return
+     * @return The high confidence interval
      */
     public double confidenceHi() {
-        return mean() + ((1.96 * Math.sqrt(stddev())) / Math.sqrt(t));
+        return mean() + (1.96 * stddev() / Math.sqrt(t));
     }
 
     /**

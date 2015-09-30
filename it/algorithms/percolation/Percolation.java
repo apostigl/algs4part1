@@ -19,6 +19,7 @@ public class Percolation {
     private final boolean[][] grid;
     private final int N;
     private final WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF backwashUf; // extra union Data Structure to avoid 'backwash' issue 
    
     public Percolation(int N) {
         this.N = N;
@@ -27,24 +28,29 @@ public class Percolation {
 
         // Contains a grid with all sites blocked by default (false)
         // Since valid row and column indices are between 1 and N, the last row and the first column are extra
-        // and we use them to store the virtual top in (0,0) which means position 0 in the union data structure
-        // and the virtual bottom in (0,N+1) which maps to position N*N+1 in the union data structure
+        // and we use them to store the virtual top in (0, 0) which means position 0 in the union data structure
+        // and the virtual bottom in (0, N+1) which is mapped to position N*N+1 in the union data structure
         grid = new boolean[N + 1][N + 1];
         
         // Initializes an empty union-find data structure.
         uf = new WeightedQuickUnionUF((N * N) + 2); // N*N values for the matrix elements plus the virtual top and bottom sites.
-
-        //links the top virtual site (with index 0 in the data structure) with every site in the first row of the grid
+        backwashUf = new WeightedQuickUnionUF((N * N) + 1); // N*N values for the matrix elements plus the virtual top only.
+        
+        // links the top virtual site with every site in the first row of the grid
+        // this values for both the Union Data Structures.
         for (int i = 1; i < N+1; i++) {
             int q = xyTo1D(1, i);
             uf.union(0, q);
+            backwashUf.union(0, q);
         }
 
-        // links the bottom virtual site (with index N*N+1 in the data structure) with every site in the last row of the grid
+        // links the bottom virtual site with every site in the last row of the grid
+        // the 'backwash' union data structure has not a virtual bottom site.
         for (int i = 1; i < N+1; i++) {
             int p = xyTo1D(N, i);
             uf.union(p, N*N + 1);
         }
+        
     }
 
     /**
@@ -64,8 +70,8 @@ public class Percolation {
             }
 
             grid[i][j] = true;
-
-            //links the site in question to its open neighbors
+  
+            //links the site in question to its open neighbours
             connectTop(i, j);
             connectBottom(i, j);
             connectLeft(i, j);
@@ -76,8 +82,8 @@ public class Percolation {
 
     /**
      * Connects to the top site if opened
-     * @param i
-     * @param j
+     * @param i The x coordinate of the site
+     * @param j The y coordinate of the site
      */
     private void connectTop(int i, int j) {
         if (i == 1) {
@@ -88,14 +94,16 @@ public class Percolation {
         if (isOpen(i - 1, j)) {
             int index = xyTo1D(i, j);
             int topSiteIndex = xyTo1D(i-1, j);
+            
             uf.union(index, topSiteIndex);
+            backwashUf.union(index, topSiteIndex);
         }
     }
 
     /**
      * Connects to the bottom site if opened
-     * @param i
-     * @param j
+     * @param i The x coordinate of the site
+     * @param j The y coordinate of the site
      */
     private void connectBottom(int i, int j) {
         if (i == N) {
@@ -106,14 +114,16 @@ public class Percolation {
         if (isOpen(i + 1, j)) {
             int index = xyTo1D(i, j);
             int bottomSiteIndex = xyTo1D(i+1, j);
+            
             uf.union(index, bottomSiteIndex);
+            backwashUf.union(index, bottomSiteIndex);
         }
     }
 
     /**
      * Connects to the left site if opened
-     * @param i
-     * @param j
+     * @param i The x coordinate of the site
+     * @param j The y coordinate of the site
      */
     private void connectLeft(int i, int j) {
         if (j == 1) {
@@ -124,14 +134,16 @@ public class Percolation {
         if (isOpen(i, j-1)) {
             int index = xyTo1D(i, j);
             int leftSiteIndex = xyTo1D(i, j-1);
+            
             uf.union(index, leftSiteIndex);
+            backwashUf.union(index, leftSiteIndex);
         }
     }
 
     /**
      * Connects to the right site if opened
-     * @param i
-     * @param j
+     * @param i The x coordinate of the site
+     * @param j The y coordinate of the site
      */
     private void connectRight(int i, int j) {
         if (j == N) {
@@ -142,7 +154,9 @@ public class Percolation {
         if (isOpen(i, j+1)) {
             int index = xyTo1D(i, j);
             int rightSiteIndex = xyTo1D(i, j+1);
+
             uf.union(index, rightSiteIndex);
+            backwashUf.union(index, rightSiteIndex);
         }
     }
 
@@ -162,8 +176,8 @@ public class Percolation {
 
     /**
      * Checks if site (row i, column j) is full. 
-     * A full site is an open site that can be connected to 
-     * an open site in the TOP row via a chain of neighboring (left, right, up, down) open sites
+     * A full site is an open site that can be connected to an open site
+     * in the TOP row via a chain of neighboring (left, right, up, down) open sites.
      *
      * @param i The x coordinate of the site
      * @param j The y coordinate of the site
@@ -176,8 +190,8 @@ public class Percolation {
 
         int q = xyTo1D(i, j); //this site
 
-        // Checks the connection between this site and the top virtual site
-        return uf.connected(0, q);
+        // Checks the connection between the top virtual site and this site. This is done using the 'supporting' data structure 
+        return backwashUf.connected(0, q);
     }
 
     /**
@@ -188,7 +202,7 @@ public class Percolation {
      * @return The 1D position of the 2D site.
      */
     private int xyTo1D(int x, int y) {
-        return (x-1)* N + y;
+        return (x - 1)* N + y;
     }
 
     /**
@@ -219,6 +233,8 @@ public class Percolation {
         return false;
     }           
 
+    
+    // A test client
     public static void main(String[] args) {
         Percolation percolation = new Percolation(10);
 
