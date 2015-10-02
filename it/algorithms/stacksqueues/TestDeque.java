@@ -1,13 +1,10 @@
 package it.algorithms.stacksqueues;
 
-
 import static org.junit.Assert.assertEquals;
 
 import java.util.Iterator;
 
 import org.junit.Test;
-
-import edu.princeton.cs.algs4.StdOut;
 
 public class TestDeque {
     
@@ -37,6 +34,16 @@ public class TestDeque {
     public void testNoSuchElementExceptionWhenRemoveLastEmpty() {
        deque.removeLast();
     }
+    
+    @Test
+    public void testOneEmptyOne() {
+        deque.addFirst("1");
+        
+        assertEquals(deque.removeFirst(), "1");
+        
+        deque.addLast("2");
+    }
+    
     
     @Test
     public void testAddFirstAndRemoveLastAll() {
