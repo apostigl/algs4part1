@@ -71,7 +71,7 @@ public class Percolation {
 
             grid[i][j] = true;
   
-            //links the site in question to its open neighbours
+            //links the site in question to its open neighbors
             connectTop(i, j);
             connectBottom(i, j);
             connectLeft(i, j);
