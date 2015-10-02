@@ -18,10 +18,6 @@ public class TestDeque {
         assertEquals(deque.size(), 0);
     }
     
-    /**
-     * If you call addFirst() with the numbers 1 through N in ascending order,
-     * then call removeLast() N times, you should see the numbers 1 through N in ascending order
-     */
     @Test
     public void testAddFirstAndRemoveAll() {
         deque.addFirst("1");
@@ -30,13 +26,29 @@ public class TestDeque {
         deque.addFirst("4");
         deque.addFirst("5");
         
-        System.out.println(deque.removeLast());
-        System.out.println(deque.removeLast());
-        System.out.println(deque.removeLast());
-        System.out.println(deque.removeLast());
-        System.out.println(deque.removeLast());
+        assertEquals(deque.removeLast(), "1");
+        assertEquals(deque.removeLast(), "2");
+        assertEquals(deque.removeLast(), "3");
+        assertEquals(deque.removeLast(), "4");
+        assertEquals(deque.removeLast(), "5");
     }
 
+    @Test
+    public void testAddLastAndRemoveAll() {
+        deque.addLast("1");
+        deque.addLast("2");
+        deque.addLast("3");
+        deque.addLast("4");
+        
+        assertEquals(deque.removeLast(), "4");
+        assertEquals(deque.removeLast(), "3");
+        assertEquals(deque.removeLast(), "2");
+        assertEquals(deque.removeLast(), "1");
+    }
+    
+    
+    
+    
     @Test
     public void testIterator() {
         deque.addFirst("1");
@@ -47,12 +59,15 @@ public class TestDeque {
         
         deque.removeFirst();
         
-        Iterator<String> i = deque.iterator();
+        Iterator<String> iterator = deque.iterator();
         
-        while (i.hasNext())
+        int i = 4;
+        while (iterator.hasNext())
         {
-            String s = i.next();
-            StdOut.println(s);
+            String s = iterator.next();
+            assertEquals(s, ""+i);
+            
+            i--;
         }
     }
 }

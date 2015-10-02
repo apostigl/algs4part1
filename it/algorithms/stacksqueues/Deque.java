@@ -101,7 +101,7 @@ public class Deque<Item> implements Iterable<Item> {
         last.previous = oldLast;
                 
         if (isEmpty()) {
-            last = first;
+            first = last;
         }
         
         size++;
@@ -116,8 +116,10 @@ public class Deque<Item> implements Iterable<Item> {
         
         Item oldFirstItem = first.item;
         first = first.next;
-        first.previous = null;        
         
+        if (!isEmpty()) {
+            first.previous = null;        
+        }
         size--;
         
         return oldFirstItem;
@@ -132,9 +134,12 @@ public class Deque<Item> implements Iterable<Item> {
         
         Item oldLastItem = last.item;
         last = last.previous;
-        last.next = null;       
-        
+
         size--;
+        
+        if (!isEmpty()) {
+            last.next = null;
+        }
         
         return oldLastItem;
     }   
