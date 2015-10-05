@@ -45,9 +45,21 @@ public class TestDeque {
     }
     
     @Test
-    public void testOneEmptyTwo() {
-        deque.addLast("1");
+    public void test10() {
+        
+        deque = new Deque<String>();
+        
+        deque.addFirst("1");
+        deque.addFirst("2");
+        deque.addFirst("3");
+        deque.addFirst("4");
         assertEquals(deque.removeLast(), "1");
+        assertEquals(deque.removeFirst(), "4");
+        deque.addLast("7");
+        assertEquals(deque.removeLast(), "7");
+        assertEquals(deque.removeLast(), "2");
+        assertEquals(deque.removeLast(), "3");
+        assertEquals(deque.size(), 0);
     }
     
     
