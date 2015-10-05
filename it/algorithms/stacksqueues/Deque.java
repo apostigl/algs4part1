@@ -67,7 +67,7 @@ public class Deque<Item> implements Iterable<Item> {
      * @param item The item to be added
      */
     public void addFirst(Item item) {
-        if (item.equals(null)) throw new java.lang.NullPointerException();
+        if (item == null) throw new java.lang.NullPointerException();
 
         Node oldFirst = first;
         
@@ -91,13 +91,13 @@ public class Deque<Item> implements Iterable<Item> {
      * @param item The item to be added
      */
     public void addLast(Item item) {
-        if (item.equals(null)) throw new java.lang.NullPointerException();
+        if (item == null) throw new java.lang.NullPointerException();
         
         Node oldLast = last;
         
         last = new Node();
         last.item = item;
-        last.next = null;
+        last.next = null;   //avoids loitering
         last.previous = oldLast;
                 
         if (isEmpty()) {
@@ -118,6 +118,7 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new java.util.NoSuchElementException();
         
         Item oldFirstItem = first.item;
+        first.item = null;       //avoids loitering
         first = first.next;
         
         size--;
@@ -137,6 +138,7 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new java.util.NoSuchElementException();
         
         Item oldLastItem = last.item;
+        last.item = null;
         last = last.previous;
 
         size--;

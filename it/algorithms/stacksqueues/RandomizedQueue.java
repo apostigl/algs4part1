@@ -7,8 +7,8 @@ import edu.princeton.cs.algs4.StdRandom;
 
 /*----------------------------------------------------------------
  *  Author:        Angelo Postiglione
- *  Written:       01/10/2015
- *  Last updated:  01/10/2015
+ *  Written:       02/10/2015
+ *  Last updated:  05/10/2015
  *
  *  A randomized queue is similar to a stack or queue, except that 
  *  the item removed is chosen uniformly at random from items in the data structure.
@@ -59,6 +59,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         randomQueue[N++] = item;
     }
     
+    /**
+     * Resize the array of the given capacity
+     * @param capacity The new capacity of the array.
+     */
     private void resize(int capacity)
     {
         Item[] copy = (Item[]) new Object[capacity];
@@ -79,14 +83,17 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int index = StdRandom.uniform(N);
         
         Item item = randomQueue[index];
-        randomQueue[index] = null;
         
-        // shrink size of array if necessary
+        // swap last item with the removed one in order to avoid NULL values among elements.
+        randomQueue[index] = randomQueue[N-1];
+        randomQueue[N-1] = null;
+        
+        N--;
+
+        // halve size of array when array is one-quarter full
         if (N > 0 && N == randomQueue.length/4) { 
             resize(randomQueue.length/2);
         }
-        
-        N--;
         
         return item;
     }
@@ -111,38 +118,49 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return new RandomizedQueueIterator();
     }
     
-    // The order of two or more iterators to the same randomized queue must be mutually independent
-    
     /**
      * An iterator for the Randomized Queue. It doesn't implement remove() since it's optional.
      * The iterator must support operations next() and hasNext() in constant worst-case time; and construction in linear time.
      */
     private class RandomizedQueueIterator implements Iterator<Item> {
-        private int i;
+        private int index;
+        private int[] indices;
         
         public RandomizedQueueIterator() {
-            i = StdRandom.uniform(N);
+            indices = new int[N];
+            
+            for (int i = 0; i < indices.length; i++) {
+                indices[i] = i;
+            }
+            
+            // Shuffle the array of indexes
+            StdRandom.shuffle(indices);
         }
 
+        @Override
         public boolean hasNext() {
-            return randomQueue[i+1] != null;
+           return index < N;
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Item next() {
             if (!hasNext()) throw new NoSuchElementException();
-
-            return randomQueue[i+1];
+            
+            int randomIndex = indices[index];
+            index++;
+            
+            // Returns the next element of the shuffled randomized queue
+            return randomQueue[randomIndex];
         }
-       
     }
     
-    
-    // unit testing
     public static void main(String[] args) {
         
+        // tests in dedicated file
     }
  }

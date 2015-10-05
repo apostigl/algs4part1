@@ -44,6 +44,12 @@ public class TestDeque {
         deque.addLast("2");
     }
     
+    @Test
+    public void testOneEmptyTwo() {
+        deque.addLast("1");
+        assertEquals(deque.removeLast(), "1");
+    }
+    
     
     @Test
     public void testAddFirstAndRemoveLastAll() {
